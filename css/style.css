@@ -1,0 +1,2459 @@
+/* ==========================================================================
+   微奇3D 官網 — 共用樣式表
+   結構順序（後續 task 依此順序在檔尾附加各頁樣式）：
+   1. tokens + reset + body
+   2. .container
+   3. navbar
+   4. footer
+   5. float-btns
+   6. lightbox
+   7. yt-facade
+   8. marquee
+   9. carousel
+   10. faq
+   11. 通用（.sec-title / .btn / grid）
+   ========================================================================== */
+
+/* 1. tokens + reset + body ------------------------------------------------ */
+:root {
+  --navy: #1b1b4f;
+  --navy-dark: #10103a;
+  --orange: #f28c28;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+  color: #000;
+  background: #fff;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* 2. container ------------------------------------------------------------ */
+/* 內容容器（2026-08-20 依業主指定，比照 mercedes-benz.com.tw 的規則改寫）。
+   量測該站：內容寬 = 視窗 86%、上限 1680px（1960px 視窗時 86% 應為 1686，
+   實測仍是 1680，故上限確為 1680）。
+   舊值 1200px 是 1366 螢幕時代的慣例，在 1920 上兩側各留 380px 白，畫面
+   中央只剩一條內容；改為流動留白後 1920 的內容寬由 1160 增為 1651。
+   注意 1280 視窗下反而略窄（1160 → 1101），這是該規則本身的取捨。 */
+.container {
+  width: 86%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* 容器放寬是給圖片與格線用的，長段落不能跟著變寬——1680px 下每行會超過
+   100 個中文字，遠超易讀上限（35–40 字）。這些選擇器來自全站掃描，是實際
+   存在長文的容器。42em 在 15px 字級約 630px、40 字一行。 */
+.zigzag-text p,
+.article-content p,
+.sec-sub {
+  max-width: 42em;
+}
+
+
+/* 3. navbar ---------------------------------------------------------------- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  color: #fff;
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  position: relative;
+}
+
+/* 站名連結的可點高度：內容（logo 圖）只有 40px，navbar 有 72px 可用，
+   撐到 44 不影響版面。 */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.logo img {
+  height: 40px;
+  display: block;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
+  /* 內容維持 32x32（三條線的寬度不變），靠 content-box + 內距把可點區
+     外擴到 44x44——直接把 width/height 改 44 會讓線條跟著變寬。 */
+  box-sizing: content-box;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  margin: -6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform .2s, opacity .2s;
+}
+
+/* 漢堡 → X 變形。三條線的節距是 8px（3px 線高 + 5px gap），所以上下線各位移
+   8px 才會在中線位置交會。開著選單時漢堡仍是三條線的話，「再按一下會關閉」
+   得靠使用者猜——X 是這個狀態的視覺出口。 */
+.navbar.open .nav-toggle span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.navbar.open .nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar.open .nav-toggle span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links > li {
+  position: relative;
+}
+
+.nav-links > li > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #fff;
+  font-size: 15px;
+  padding: 8px 0;
+  white-space: nowrap;
+}
+
+.nav-links > li > a:hover {
+  color: var(--orange);
+}
+
+.nav-links .caret {
+  font-size: 11px;
+}
+
+.btn-cta {
+  background: var(--orange);
+  color: #fff !important;
+  padding: 10px 22px !important;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.btn-cta:hover {
+  background: #d9761c;
+  color: #fff !important;
+}
+
+/* dropdown — 桌機 hover 展開 */
+.dropdown .menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 210px;
+  background: #fff;
+  color: #000;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
+  padding: 8px 0;
+  z-index: 110;
+}
+
+.dropdown .menu li a {
+  display: block;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.dropdown .menu li a:hover {
+  background: #f5f5f5;
+  color: var(--orange);
+}
+
+/* hover 展開僅桌機（≥1024px）生效，避免與 <1024px 的點擊展開互相打架 */
+@media (min-width: 1024px) {
+  .dropdown:hover .menu {
+    display: block;
+  }
+}
+
+/* 手機/平板點擊展開下拉（JS 於 <1024px 攔截點擊並切換 .open） */
+.dropdown.open .menu {
+  display: block;
+  position: static;
+}
+
+/* 手機＋平板：靠右下拉選單面板（<1024px，與 JS 的 window.innerWidth<1024 對齊）。
+   2026-08-22 依業主提供的參考畫面，由全螢幕覆蓋改為右側面板：面板只佔右側
+   一部分、左側頁面內容仍看得見，訪客不會失去所在位置的脈絡；高度貼合內容，
+   CTA 緊接最後一個項目而非被推到螢幕最底。
+   以下註解保留當初全螢幕版的三個修正紀錄，其解法仍在（漢堡變 X、互斥展開、
+   矮螢幕內部捲動），只有版型改變。
+   （原註解）
+   2026-08-18 改版，解掉三個問題：
+   1) 橫向捲軸——.btn-cta 是 li > a，吃到下面的 width:100% 又加左右各 20px
+      margin，總寬 430px 撐爆 390px 容器。改 width:auto 治本。
+   2) 縱向捲軸——8 個功能子選單直排把選單撐過一個螢幕。子選單改兩欄省下
+      約 160px，配合 JS 的互斥手風琴（開一個關另一個），iPhone SE 的
+      390x667 在最長狀態下仍是零捲軸。
+   3) 沒有關閉訊號、CTA 難按——選單改 fixed 蓋滿視窗，「預約展示」以
+      margin-top:auto 推到底部拇指區；漢堡同時變 X（見上方）。
+   top:72px 與 navbar 實高耦合（既有 max-height:calc(100vh-72px) 也是同一
+   個數字），改 navbar 高度時兩處要一起改。 */
+@media (max-width: 1023px) {
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .navbar.open .nav-links {
+    display: flex;
+    position: fixed;
+    top: 72px;
+    /* 靠右：不設 left，改用 right + width，面板才不會撐滿 */
+    right: 0;
+    left: auto;
+    /* 寬度有硬下限：子選單最長的「2D/3D同步直覺建構」實測 119px，加左右
+       padding（18+10）共需 147px，低於此文字會被截。
+       50vw  業主選定比例，390px 螢幕得 195px。
+       210px 上限擋平板：768–1023px 若照 50vw 會長成半個畫面。
+       180px 下限擋老機型：320px 照 50vw 只有 160px，子層僅剩 13px 餘裕。 */
+    width: clamp(180px, 50vw, 210px);
+    /* 不設 bottom → 高度由內容決定 */
+    max-height: calc(100vh - 72px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 0 14px;
+    background: var(--navy-dark);
+    box-shadow: -6px 8px 24px rgba(0, 0, 0, .28);
+    /* 極端矮螢幕（橫放手機）仍可捲——捲軸難看，但按不到 CTA 更糟 */
+    overflow-y: auto;
+    animation: nav-in .2s ease;
+  }
+
+  .nav-links > li {
+    width: 100%;
+  }
+
+  .nav-links > li > a {
+    width: 100%;
+    padding: 11px 18px;
+    font-size: 15px;
+    justify-content: space-between;
+  }
+
+  /* 箭頭推到右緣：與 FAQ 的展開箭頭同一個語彙（右側、展開時旋轉 180 度） */
+  .nav-links .caret {
+    margin-left: auto;
+    opacity: .6;
+    transition: transform .2s;
+  }
+
+  .dropdown.open > a .caret {
+    transform: rotate(180deg);
+  }
+
+  .dropdown .menu {
+    /* 桌機那條 min-width: 210px 是給浮動下拉用的，面板寬 242px 時剛好藏得住；
+       收窄到 180–195px 就成了面板內固定 210px 的硬塊，撐出橫向捲軸。
+       面板本身已經限寬，子選單不需要任何最小寬度。 */
+    min-width: 0;
+    background: rgba(255, 255, 255, .05);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  /* 面板變窄後兩欄會擠，改單欄。互斥展開仍在，面板不會被撐過螢幕。 */
+  .dropdown.open .menu {
+    display: block;
+  }
+
+  .dropdown .menu li a {
+    color: #d8d8e6;
+    font-size: 13px;
+    padding: 9px 10px 9px 18px;
+  }
+
+  /* CTA 緊接最後一個項目。原本用 margin-top:auto 推到視窗底部，那是全螢幕
+     版才需要的；面板高度貼合內容後，推到底反而會把面板整個撐開。 */
+
+  /* 選擇器要壓過上面的 .nav-links > li > a（0,1,2）——單寫 .btn-cta 只有
+     0,1,0 會輸掉，width 仍是 100%，加上左右 margin 就是那條橫向捲軸。 */
+  /* 實心橘、方形。桌機那顆是 999px 膠囊，手機面板本身四邊都是直角
+     （面板、子選單背景皆無圓角），膠囊放進來是唯一的圓形，改直角才同語彙。
+     border-radius 只要壓過基底 .btn-cta（0,1,0）與 .btn（0,1,0），
+     .nav-links .btn-cta（0,2,0）即可，不需要 !important。
+     width: auto 必須留著——.nav-links > li > a 是（0,1,2），會把 width:100%
+     套上來，配左右 margin 就是一條橫向捲軸。 */
+  .nav-links .btn-cta {
+    width: auto;
+    display: block;
+    margin: 10px 18px 0;
+    padding: 10px 12px !important;
+    border-radius: 0;
+    text-align: center;
+    font-size: 15px;
+  }
+}
+
+/* 選單進場：淡入 + 微下滑，與漢堡變形同為 .2s，兩個動作看起來是同一件事。
+   display 由 none 切到 flex 無法 transition，故用 animation。 */
+@keyframes nav-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 4. footer ----------------------------------------------------------------- */
+.site-footer {
+  background: var(--navy-dark);
+  color: #fff;
+  padding: 56px 0 24px;
+}
+
+/* 第一欄用 1.75fr 而非 1.4fr：1.4fr 只分到 268px，塞不下地址那行需要的
+   296px，設計稿上是一行的地址會折成兩行。1.75fr 在 1200px 容器下約 314px，
+   留 18px 餘裕；右邊四欄各縮約 12px（179px），仍寬於最長的
+   「2D/3D同步直覺建構」（約 168px），不會被擠折。
+   1.75fr 已接近上限，勿再往上調：1.8fr 會把右欄壓到約 167.6px，變成選單
+   文字折行。1024-1200px 區間地址仍會折行且無解——該處五欄可用總寬僅
+   856px，而「地址 296 + 四欄各 168」需要 968px，差 112px，只能二選一，
+   選擇讓地址折行（自然續行）而非選單折行（看起來像壞掉）。 */
+/* 選單欄靠右（2026-08-20 業主指定）。原本四欄各佔 1fr（每欄約 198px），
+   但內容長度差很多——「素材庫」只有一項、「功能介紹」有八項——固定等寬會
+   讓短欄留下大片空白，看起來鬆散偏左。改為 max-content 貼合內容，第一欄
+   吃掉剩餘空間，四欄自然聚攏在右側且最後一欄仍齊右緣。 */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, max-content);
+  gap: 48px;
+}
+
+.footer-col h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: var(--orange);
+}
+
+/* 觸控目標尺寸（2026-08-19 全站手機掃描後補）。WCAG 2.2 AA 的 2.5.8 要求
+   至少 24x24 CSS px，AAA 的 2.5.5 要求 44x44；能做到 44 的一律做到 44。
+   頁尾導覽連結原本只有 20px 高，在手機上很難點準。用 padding 撐開可點區，
+   li 的 margin 同步減去相同量，頁尾視覺行距維持不變。 */
+/* 導覽連結的可點高度：文字只有 20px。上下各補 12px 內距撐到 44。
+   選擇器要排除 .footer-social——它也是 .footer-col ul li a（0,1,3），會壓過
+   .footer-social a（0,1,1）把社群圖示的圓形與內距一起改掉。
+   不用負 margin 抵銷：那會讓相鄰連結的可點區互相重疊（實測 -11px），
+   手機上變成很容易點錯。改為把 li 的間距從 10px 收到 0，內距吃掉原本的
+   空隙，視覺行距幾乎不變而可點區不相交。 */
+@media (max-width: 1023px) {
+  .footer-col ul:not(.footer-social) li a {
+    display: block;
+    padding: 12px 0;
+  }
+
+  .footer-col ul:not(.footer-social) li {
+    margin-bottom: 0;
+  }
+}
+
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+  font-size: 14px;
+  color: #d8d8e6;
+}
+
+.footer-col ul li a:hover {
+  color: var(--orange);
+}
+
+.footer-company .footer-logo {
+  height: 32px;
+  margin-bottom: 16px;
+}
+
+.footer-info {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #c3c3d6;
+  margin-bottom: 16px;
+}
+
+/* 頁尾社群 icon 列。
+   這格原本是一張四顆併排的合成圖（assets/line-qr.png），沿用了 LINE QR code
+   時代的 background:#fff + padding —— QR 需要白色靜空區才掃得到，是當時的
+   正確作法。後來圖換成透明底的社群 icon 但樣式沒跟著改，白底就成了深色頁尾
+   上多餘的白框；改切成四個獨立 icon 各自可點後，白底一併移除。
+   選擇器用 .footer-col .footer-social（0,2,1）而非 .footer-social（0,1,0），
+   是為了勝過上面 .footer-col ul li（0,1,2）的 margin-bottom:10px。 */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-col .footer-social li {
+  margin-bottom: 0;
+}
+
+.footer-social img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+/* padding 把 32px 的圖示撐成 44x44 的可點區域（觸控目標下限），
+   視覺大小不變。 */
+.footer-social a {
+  display: block;
+  padding: 6px;
+  border-radius: 50%;
+  transition: transform .18s ease, opacity .18s ease;
+}
+
+.footer-social a:hover,
+.footer-social a:focus-visible {
+  transform: translateY(-2px);
+  opacity: .85;
+}
+
+.footer-social a:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+  font-size: 12px;
+  color: #9a9ac0;
+  text-align: center;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* 5. float-btns -------------------------------------------------------------- */
+.float-btns {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 浮動鈕只掛在 index.html。icon 與頁尾社群列共用同一組品牌圖示，
+   不再用 CSS 畫底色圓形＋自繪 svg。 */
+.float-btn {
+  width: 48px;
+  height: 48px;
+  display: block;
+  transition: transform .15s;
+}
+
+.float-btn:hover {
+  transform: scale(1.08);
+}
+
+.float-btn:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+.float-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* icon 是透明底 PNG，圓形之外是透明的。用 drop-shadow 讓陰影跟著
+     alpha 走，box-shadow 會沿元素的方形邊界描出一圈方框陰影。 */
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35));
+}
+
+/* 6. lightbox ----------------------------------------------------------------- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .85);
+  display: none;
+  place-items: center;
+  z-index: 200;
+}
+
+.lightbox-overlay.show {
+  display: grid;
+}
+
+.lightbox-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 36px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+[data-lightbox] {
+  cursor: zoom-in;
+}
+
+/* 7. yt-facade ------------------------------------------------------------------ */
+.yt-facade {
+  position: relative;
+  /* 必須明寫 width：.soft-item 是 align-items:center，會讓 facade 收縮成內容
+     寬度，而 facade 的寬度是靠裡面那張 <img> 撐的。點擊播放後 innerHTML 被
+     換成絕對定位的 iframe（脫離文件流），寬度歸零 → aspect-ratio 16/9 把高度
+     也算成 0 → 整個影片區塌掉，卡片只剩標題文字。隔壁 .soft-media 沒這問題
+     正是因為它有寫 width:100%。 */
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.yt-facade img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yt-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 48px;
+  background: #ff0000;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-play::before {
+  content: '';
+  margin-left: 4px;
+  border-style: solid;
+  border-width: 11px 0 11px 19px;
+  border-color: transparent transparent transparent #fff;
+}
+
+/* 卡片無聲預覽：滑鼠停留 400ms 後就地播一段短片取代靜止縮圖，點擊仍開 YouTube。
+   影片疊在縮圖上而非取代它——縮圖是 fallback，也是預覽淡入淡出的底。
+   pointer-events:none 讓點擊穿透到 .yt-facade，既有的 facade 點擊處理器不受影響。 */
+.yt-facade video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .28s ease;
+  pointer-events: none;
+}
+
+.yt-facade.playing video {
+  opacity: 1;
+}
+
+/* 預覽播放時整顆播放鈕隱藏（2026-08-22 業主指定）。
+   縮小到 .7 是為了讓它「退場」而不是「瞬間消失」——與淡出同一個 .28s。 */
+.yt-facade .yt-play {
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.yt-facade.playing .yt-play {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.7);
+}
+
+.yt-facade iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* 8. marquee ------------------------------------------------------------------- */
+/* 改用原生水平捲動而非 CSS transform：手機才有「用手滑」，而原生捲動同時
+   帶來慣性與正確的觸控行為，是 transform 版做不到的。自動捲動改由 main.js
+   以 requestAnimationFrame 推進 scrollLeft，循環點取「實測像素的一半」而非
+   translateX(-50%)，不會有百分比換算的累積誤差。
+   overscroll-behavior-x:contain 擋掉 iOS 橫向滑到底時的返回上一頁手勢。 */
+.marquee {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.marquee::-webkit-scrollbar {
+  display: none;
+}
+
+/* width: max-content 是這個跑馬燈能運作的前提，不可省略。
+   inline-flex 的寬度是 shrink-to-fit，會被 containing block 的可用寬度
+   卡住（例：.client-marquee 在 1160px 容器裡只拿到 1160px，但兩組 logo
+   實際需要 2771px）。一旦被卡住，裡面兩組內容（flex-shrink 預設 1）就
+   會被壓成各 580px，而 <img> 是替換元素、維持等比寬度不跟著縮，於是內容
+   溢出自己的 box，第二組正好畫在第一組溢出的內容上 → logo 疊在一起。
+   （當初站上另一個跑馬燈 #news-bar 沒出事只是運氣好：它的子元素是 nowrap
+   文字，min-content 等於整串文字寬，壓不下去。該跑馬燈已於 2026-08-15 移除，
+   但這條規則寫在共用的 .marquee-inner 上，日後新增任何跑馬燈都受保護。）
+   另一半原因同樣重要：@keyframes 的 translateX(-50%) 是相對 inner 自身
+   寬度，只有當 inner 寬 == 兩組內容總寬時，-50% 才剛好等於一組寬度、
+   循環才無縫。被壓縮時 -50% 只有 580px 而一組是 1362px，循環會跳位。 */
+.marquee-inner {
+  display: inline-flex;
+  width: max-content;
+}
+
+/* 9. carousel ------------------------------------------------------------------- */
+.carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform .4s;
+}
+
+.carousel-page {
+  flex: 0 0 100%;
+}
+
+.carousel-prev,
+.carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  /* 44x44 是觸控目標下限；原本 40x40 不足 */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0, 0, 0, .5);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 10;
+}
+
+.carousel-prev {
+  left: 12px;
+}
+
+.carousel-next {
+  right: 12px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.carousel-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+}
+
+.carousel-dots span.active {
+  background: var(--orange);
+}
+
+/* 10. faq ------------------------------------------------------------------------ */
+.faq-item + .faq-item {
+  margin-top: 12px;
+}
+
+.faq-q {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 18px 24px;
+  text-align: left;
+  font-size: 17px;
+  border: 0;
+  cursor: pointer;
+  /* 右側展開箭頭（::after 的 ▾）。flex 把文字推左、箭頭推右 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-radius: 8px;
+}
+
+/* 展開箭頭。字元用 ▾ 與 navbar 下拉的 .caret 同一顆，全站「可展開」同一
+   視覺語言。原本黑色題列沒有任何可點的視覺線索，只能靠一行「點擊問題
+   展開/收合」說明字撐著；箭頭加上後該說明字已移除（需要說明文字的
+   affordance 等於沒做完）。 */
+.faq-q::after {
+  content: '▾';
+  font-size: 15px;
+  flex: 0 0 auto;
+  transition: transform .25s ease;
+  opacity: .85;
+}
+
+.faq-item.open .faq-q::after {
+  transform: rotate(180deg);
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+
+.faq-item.open .faq-a {
+  max-height: 400px;
+}
+
+.faq-a-inner {
+  padding: 16px 24px;
+  background: #f5f5f5;
+  border-radius: 0 0 8px 8px;
+}
+
+/* 11. 通用（sec-title / btn / grid） ----------------------------------------------- */
+
+/* 區塊標題：文字標題 + 毛筆刷裝飾（brush-*.png 為單一無字紅墨刷，見 Task 1 驗證）
+   標記：<h2 class="sec-title"><span class="sec-title-text">標題文字</span></h2>
+   如需換用不同 brush 檔案，於 .sec-title-text 上加 inline style="--brush:url(../assets/brush-xxx.png)" 覆寫
+   （custom property 內的 url() 是相對於「消費該 var() 的樣式表」即本檔 css/style.css 解析，不是相對於文件，
+   故無論在哪個頁面覆寫都固定用 ../assets/；已用 Chrome computed style + Network 面板實測驗證：
+   改用文件相對路徑 assets/xxx.png 會被誤解析成 css/assets/xxx.png 而 404，維持 ../assets/xxx.png 才會正確解析為
+   /assets/xxx.png 並回應 200）
+   每頁第一個 .sec-title 一律用 <h1> 而非 <h2>（全站每頁需恰好一個 h1，其餘區塊標題維持 h2）；
+   選擇器全部只認 class 不認 tag，h1/h2 共用同一份規則且視覺輸出逐 px 相同（.sec-title-text 內文字大小/粗細/顏色
+   已明確指定，外層 h1/h2 本身的 UA 預設 margin 又被全站 `* { margin:0 }` 重置歸零，故切換 tag 不需要另外補樣式），
+   已用瀏覽器 computed style 實測 reviews.html 驗證：h1/h2 的 .sec-title margin-top/margin-bottom/height 完全一致。 */
+.sec-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sec-title-text {
+  --brush: url(../assets/brush-yizhi.png);
+  position: relative;
+  display: inline-block;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--navy);
+  padding: 14px 40px;
+  z-index: 1;
+}
+
+/* 毛筆刷定位。原本是 inset:-18px -34px + center/contain，等於把整張圖
+   置中鋪在標題後面，而墨跡在圖檔的 36.5%-63.3% 高度（正中間），結果墨跡
+   橫穿文字中段。設計稿（2026網頁設計v2.pptx slide4）是把它當「壓在文字
+   底緣的一道底線」，實測該投影片座標換算成相對文字 em 盒的比例：
+     墨跡上緣 77% em（壓到文字底部 23%）、下緣 138% em、中心在文字底下方
+     8% em、高度 61% em、寬度約等於文字寬、且圖被橫向拉伸 1.52 倍。
+   回推本站（font-size 34px、圖的墨跡帶佔高 26.8% / 佔寬 80%）：
+     框高 = 0.61em / 0.268 = 2.27em
+     框底 = 文字底下方 8% em，換算後需落在元素底再往下 0.5em
+     左右各內縮 0.5em，框寬約 216px，墨跡寬約 173px ≈ 文字寬 170px
+     框比例 2.80 / 圖比例 1.833 = 拉伸 1.53 倍，與設計稿 1.52 倍吻合
+   background-size 用 100% 100%（非 contain）才能重現設計稿的非等比拉伸。
+   全部用 em，字級一變就跟著縮放，故手機不需要另外覆寫一組像素值。 */
+.sec-title-text::before {
+  content: '';
+  position: absolute;
+  left: .5em;
+  right: .5em;
+  bottom: -.5em;
+  height: 2.27em;
+  background: var(--brush) center / 100% 100% no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .sec-title-text {
+    font-size: 26px;
+    padding: 10px 20px;
+  }
+}
+
+.btn {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--orange);
+  cursor: pointer;
+  transition: opacity .2s, background .2s;
+}
+
+.btn:hover {
+  opacity: .85;
+}
+
+/* .btn-outline 原本只寫顏色，預期與 .btn 併用（class="btn btn-outline"）
+   才會有 display/padding/圓角。但全站 16 處（features 9、index 6、
+   article 1）都只掛了 .btn-outline，實測 display:inline、padding:0、
+   border-radius:0 —— 一直渲染成「有細框的行內文字」而不是按鈕。
+   與其逐處補 class（16 個地方、跨 3 頁、日後容易再漏），不如讓
+   .btn-outline 自帶基底樣式，單獨使用即成立。 */
+.btn-outline {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--orange);
+  border: 2px solid var(--orange);
+}
+
+.btn-outline:hover {
+  background: var(--orange);
+  color: #fff;
+  opacity: 1;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1023px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 首頁 ── */
+
+/* hero ---------------------------------------------------------------------- */
+/* hero 不放大超過素材原尺寸（2026-08-20 業主指定「圖使用原大小」）。
+   hero.jpg 原生 1920x798，超過 1920px 的螢幕原本會把它放大到 133%（2560px
+   時）而糊掉。上限下在 .hero 而不是只鎖圖片：標語以 % 定位、以 vw 縮放，
+   只鎖圖片會讓標語相對更寬的容器計算而與圖脫節。
+   圖片左右邊緣實測為 (255,255,253)、頁面底色 #fff，差 2 階不可辨，因此
+   超寬螢幕上置中後兩側不會出現可見色帶。 */
+.hero {
+  position: relative;
+  /* 上限＝素材真實寬度。原本寫 1920，但那是 build 把 1222px 母檔放大 1.57x
+     的結果（2026-08-20 稽核發現，shrink 已改為只縮不放）；沿用 1920 等於
+     繼續放大一張本來就只有 1222px 的圖。 */
+  max-width: 1222px;
+  margin-inline: auto;
+}
+
+/* 主視覺輪播：靜態圖 + 操作示範影片。切換由 main.js 控制，圖片停 5 秒、
+   影片以 ended 事件為切換點（綁影片長度而非固定秒數，才不會腰斬）。 */
+/* 圓點的定位基準。錨在影像區而不是整個 .hero：手機的 .hero 還包含下方的
+   navy 標語帶，錨在 .hero 上圓點就會落到色帶裡、與標語文字連成一塊。 */
+.hero-media {
+  position: relative;
+  /* 裁掉離開視野的第二張投影片。這個 overflow 必須掛在 .hero-media（沒有
+     位移的那層），不能掛在 .hero-track——track 有 transform，<video> 在
+     「同時具備 transform 與 overflow:hidden」的容器裡會無法合成，畫面呈現
+     一片空白（實測：把 track 的 overflow 拿掉，影片立刻正常顯示 8/8 取樣點）。
+     也不能掛回 .hero：斜放標語依設計稿本來就超出圖片底部，會被切掉（見 #34）。 */
+  overflow: hidden;
+}
+
+.hero-track {
+  display: flex;
+  transition: transform .5s ease;
+}
+
+.hero-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.hero img,
+.hero-slide video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 影片右側自帶「才有用／微奇3D」字樣，與斜放標語位置重疊，桌機切到影片時
+   淡出。用 opacity 而非 display:none——.hero-slogan 是本頁 h1，要留在無障礙
+   樹與 DOM 裡。手機的標語是圖下方的 navy 色帶、不覆蓋畫面，故不套此規則。 */
+.hero-overlay {
+  transition: opacity .35s ease;
+}
+
+@media (min-width: 768px) {
+  .hero.on-video .hero-overlay {
+    opacity: 0;
+  }
+}
+
+/* 圓點兩個斷點都置中（2026-08-19 業主指定放回中間）。曾短暫改為桌機靠左，
+   當時判斷它與斜放標語「同高且太近」；但真正的問題是 .hero 的 overflow
+   把標語切掉（見 qa #34），修掉之後置中並不礙事——桌機實測圓點右緣距標語
+   外框左緣 33–64px，未相交。 */
+.hero-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  z-index: 2;
+}
+
+
+/* 未選中圓點沿用最初的半透明版（2026-08-19 業主指定「要最一開始的樣子」）。
+   已知取捨：疊在影像的白色區域時對比僅約 1.34:1，低於 WCAG 非文字 UI 的
+   3:1；曾改為實心 navy（實測 5.9:1）但業主偏好原本的輕盈感。已選中的橘色
+   膠囊（26px）對比充足，「目前在第幾張」仍可辨識，受影響的只有「另外還有
+   一張」這個次要訊息。 */
+.hero-dots button {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(27, 27, 79, .3);
+  cursor: pointer;
+  transition: width .25s, background .25s;
+}
+
+/* 可點區用偽元素外擴，不動元素本身的盒模型——先前試過 padding +
+   background-clip:content-box，結果 content box 的圓角被一併裁掉，未選中
+   變方塊、已選中變正圓。偽元素只擴大點擊範圍，視覺一個像素都不動。
+   只往垂直擴：gap 僅 10px，往水平擴會讓兩顆的可點區重疊，反而更易點錯。 */
+.hero-dots button::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+}
+
+.hero-dots button[aria-current="true"] {
+  width: 26px;
+  background: var(--orange);
+}
+
+.hero-dots button:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
+/* 手機：圓點落在 .hero-overlay 那條 navy 色帶上（因為 overlay 在手機是
+   static、位於 .hero 底部），未選中色 rgba(27,27,79,.3) 疊在 #1b1b4f 上
+   等於隱形。改用白色半透明，並替色帶加下內距讓圓點與標語文字分開。 */
+/* 手機圓點疊在影像下緣、不進 navy 色帶（2026-08-19 業主指定：切換鈕在上面，
+   不要與文字同一層）。因為圓點已改錨在 .hero-media，這裡只要調間距即可；
+   顏色沿用桌機的深色版本——底下是圖片的白色區域，白點會看不見。 */
+@media (max-width: 767px) {
+  .hero-dots {
+    bottom: 10px;
+  }
+}
+
+/* hero 標語定位。設計稿 2026網頁設計v2.pptx slide1 把它斜放在圖的右下角，
+   壓在 3D 透視圖的地板線上，而非橫躺在左下的漸層條上。
+   設計稿座標（hero 圖 x=0.01 y=0.47 寬=9.96 高=4.14in）：
+     標語未旋轉外框 x=5.50 y=3.97 寬=4.18 高=0.39in
+     rot=20760000 → 346deg，即 -14deg（逆時針、往右上揚）
+     16pt 粗體、顏色為預設黑
+   換算成相對 hero 圖：外框左上 55.1% / 84.5%，寬 42.0%，
+   旋轉中心 76.1% / 89.3%，字級為 hero 寬的 2.23%。
+   PowerPoint 的 a:off 記的是「未旋轉外框」的左上角、繞外框中心旋轉；
+   CSS 這裡改用「中心定位」（left/top 指到旋轉中心 + translate(-50%,-50%)），
+   如此不論字串長度或行高造成的實際框高差多少，中心都精準落在設計稿的
+   旋轉中心，不需要去湊外框高度。
+   字級用 vw：hero 是滿版圖、寬度等於視窗，圖裡的元素必須等比縮放才不會
+   跟底圖的透視線錯位，固定 px 在寬螢幕會脫節。
+   黑字可讀性已驗證：該區域底圖中位亮度 255、暗於 128 的像素佔 0.0%。
+
+   top 直接用換算值 89.3%，標語斜放後左下角會垂出 hero 圖外約 4% 圖高。
+   這與設計稿一致——設計稿裡它同樣垂出圖外 0.25in（左下角 4.86in vs 圖底
+   4.61in），因為 PowerPoint 上圖片下方到 6.09in 都是空白。網站這側原本
+   緊接深藍色的 #news-bar 跑馬燈、黑字掉上去會消失，故一度上修為 83.6%；
+   跑馬燈移除後下方換成 .home-section 的 72px 白色留白，垂出的部分落在
+   白底上、且遠小於 72px 不會撞到下一段內容，因此改回設計稿原值。 */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-slogan {
+  position: absolute;
+  left: 76.1%;
+  top: 89.3%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  margin: 0;
+  white-space: nowrap;
+  color: #1a1a1a;
+  /* 與 .hero 的 1222px 上限同步：超過之後 vw 會繼續放大而與圖脫節，
+     2.23% x 1222 = 27.3px 即為封頂值 */
+  font-size: min(2.23vw, 27.3px);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* 手機不套設計稿的斜放版本（2.23vw 在 390px 只有 8.7px 不能讀；設計稿僅
+   畫桌機）。手機改為「圖下 navy 標語帶」而非疊在圖上：hero 圖左側烤著
+   整組行銷文字（這才叫快／一指就go），疊字會互相打架；且 390px 下圖只有
+   162px 高，漸層＋文字會蓋掉 42%。圖歸圖、標語歸標語（2026-08-18 定案，
+   對照圖見對話紀錄）。overlay 改 static 後脫離圖面，navy 底上白字對比
+   恆定，不再需要漸層與文字陰影。 */
+@media (max-width: 767px) {
+  .hero-overlay {
+    position: static;
+    inset: auto;
+    padding: 14px 20px;
+    background: var(--navy);
+  }
+
+  .hero-slogan {
+    position: static;
+    transform: none;
+    white-space: normal;
+    color: #fff;
+    font-size: 17px;
+    text-align: center;
+  }
+}
+
+/* 區塊間距 + 橘色方塊條列（全站通用樣式，後續頁面可直接沿用） ---------------------- */
+.home-section {
+  padding: 72px 0;
+}
+
+@media (max-width: 767px) {
+  .home-section {
+    padding: 48px 0;
+  }
+}
+
+.bullet-orange {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  background: var(--orange);
+}
+
+.point-list {
+  max-width: 640px;
+  margin: 0 auto 40px;
+  display: grid;
+  gap: 14px;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.point-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.point-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 32px;
+  margin: 0 auto 40px;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.point-row li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 一指操作：6 功能卡 ---------------------------------------------------------- */
+.card-grid .feature-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+  /* hover 浮動與 .news-card 同款數值（news 卡是 15 條驗收效果第 8 條的
+     既定規格）——同一個網站裡「卡片浮起來」只該有一種浮法 */
+  transition: transform .25s, box-shadow .25s;
+}
+
+.card-grid .feature-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .18);
+}
+
+.feature-card h3 {
+  margin: 18px 20px 8px;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.feature-card p {
+  margin: 0 20px 18px;
+  color: #444;
+  font-size: 14px;
+  flex-grow: 1;
+}
+
+/* 卡片底部的「了解更多 →」文字連結（2026-08-18 由 btn-outline 膠囊鈕改成，
+   依業主提供之參考畫面）。六張卡的連結文字統一後，個別目的地改由
+   aria-label 承擔（六個同名連結對螢幕閱讀器無法區分）。
+   箭頭在 hover 時右移 4px，與卡片浮動同為 .2s 級的微互動。 */
+.feature-card .card-more {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* 可點區高度：文字本身只有 22px。上下各補 11px 內距撐到 44，並從
+     margin 扣回相同量，卡片版面與間距完全不變。 */
+  padding: 11px 0;
+  margin: -11px 20px 9px;
+  color: var(--orange);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.card-more .arr {
+  transition: transform .2s;
+}
+
+.card-more:hover .arr,
+.feature-card:hover .card-more .arr {
+  transform: translateX(4px);
+}
+
+/* AI 渲染導航：交錯磚牆 -------------------------------------------------------- */
+/* AI 渲染互動切換器：舞台圖 + 縮圖籤（2026-08-19 取代原橘色箭頭拼版，
+   後者的 .ai-collage/.ai-arrow 規則已移除）。
+   舞台比例用 1424/748——五張素材中四張是 1.905，只有 style-night 是 1.76
+   （較高），object-fit:cover 會裁掉它上下約 7%，屬已知取捨。 */
+.ai-stage-wrap {
+  max-width: 960px;
+  margin: 0 auto 40px;
+}
+
+.ai-stage {
+  position: relative;
+  margin: 0 0 16px;
+  aspect-ratio: 1424 / 748;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eee;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
+}
+
+.ai-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+}
+
+.ai-view.active {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: zoom-in;
+}
+
+.ai-stage-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(16, 16, 58, .85);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.ai-chips {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ai-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.ai-chip img {
+  display: block;
+  width: 128px;
+  /* height:auto 不可省：markup 上的 height="168" 屬性是呈現性提示，會被當成
+     height:168px；而 aspect-ratio 只在其中一邊為 auto 時才生效，少了這行整條
+     aspect-ratio 形同失效，縮圖會被壓成直的再被 object-fit:cover 裁掉。
+     屬性本身保留，瀏覽器才能在圖片載入前預留空間、避免版面跳動。 */
+  height: auto;
+  aspect-ratio: 1424 / 748;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: border-color .2s, transform .2s;
+}
+
+.ai-chip span {
+  font-size: 14px;
+  font-weight: 700;
+  color: #555;
+}
+
+.ai-chip:hover img {
+  transform: translateY(-2px);
+}
+
+.ai-chip.active img {
+  border-color: var(--orange);
+}
+
+.ai-chip.active span {
+  color: var(--navy);
+}
+
+.ai-chip:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .ai-chip img {
+    width: 96px;
+  }
+
+  .ai-chip span {
+    font-size: 13px;
+  }
+}
+
+.section-cta {
+  text-align: center;
+}
+
+/* 一套軟體搞定所有需求：9 項混排卡（沿用 .grid-3 既有 3→2→1 欄斷點） ------------- */
+.soft-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+
+.soft-media {
+  width: 100%;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #eee;
+}
+
+.soft-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.soft-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: #f4f4f8;
+}
+
+.soft-logos img {
+  width: auto;
+  height: auto;
+  max-height: 56px;
+  object-fit: contain;
+}
+
+.soft-item h3 {
+  margin: 18px 20px 8px;
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.soft-item .btn {
+  margin: 0 20px 20px;
+}
+
+.drawing-note-link {
+  display: inline-block;
+  /* 同上：21px 文字補到 44px 可點區，margin 扣回 */
+  padding: 11px 0;
+  margin: -11px 20px 9px;
+  font-size: 13px;
+  color: var(--orange);
+  text-decoration: underline;
+  cursor: zoom-in;
+}
+
+.drawing-note-link:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* 豐富素材品牌：兩張拼貼並排（.grid-2）。
+   這兩張是 logo／素材「拼貼」，內容一路排到圖的邊緣——不能套照片那套
+   aspect-ratio + cover（原始比例 2.05/1.95 被塞進 4/3 的框，左右各裁掉
+   約 35%，合作品牌的 logo 直接被切）。拼貼類一律保留原始比例、不裁切。
+   兩張原始比例差 ~5%，並排時底緣會差十來 px；align-items:start 讓兩張
+   頂緣對齊、各自保持自然高度，不硬拉等高。 */
+.brand-grid {
+  align-items: start;
+}
+
+.brand-grid img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  cursor: zoom-in;
+}
+
+/* 服務與見證：四點圖文卡 + 口碑推薦精選 ------------------------------------------- */
+.svc-item {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+  /* hover 浮動與 .news-card／.feature-card 同款——全站卡片同一種浮法 */
+  transition: transform .25s, box-shadow .25s;
+}
+
+.svc-item:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .18);
+}
+
+.svc-media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #eee;
+}
+
+.svc-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.svc-item h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 20px 4px;
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.svc-item p {
+  margin: 0 20px 18px;
+  color: #444;
+  font-size: 14px;
+}
+
+.svc-grid {
+  margin-bottom: 56px;
+}
+
+.svc-highlight {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.svc-highlight-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: var(--navy);
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* 口碑推薦文字輪播。複用 js/main.js 既有的 [data-carousel]（與 reviews.html
+   的作品輪播同一支），本區只加樣式、未改 JS。
+   刻意不放裝飾性的大引號：引述文字本身已有「」，再疊一個拉丁排版的 " 是同
+   一件事說兩次，且中西引號混用不協調，還多佔約 58px 垂直空間。 */
+.quote-carousel {
+  /* 左右不留 padding：overflow:hidden 是裁在邊框盒，padding 區仍在裁切範圍
+     內，相鄰的下一頁會從那裡露出半截文字。改把讓給箭頭的空間放到 .carousel-page
+     上——頁寬等於容器寬，相鄰頁就完全落在裁切區外。 */
+  padding: 4px 0 40px;
+}
+
+.quote-carousel .carousel-page {
+  display: grid;
+  align-content: center;
+  padding: 0 56px;   /* 讓出左右箭頭的位置 */
+}
+
+/* grid item 預設會收縮貼合內容，文字就不折行、窄視窗整段溢出畫面；
+   撐滿頁寬才會正常斷行。 */
+.quote-slide {
+  width: 100%;
+}
+
+.quote-slide p {
+  font-size: 17px;
+  line-height: 1.9;
+  color: #333;
+  margin: 0;
+  /* 桌機五則實測皆為單行，鎖 1 行；切換不會跳動 */
+  min-height: 1.9em;
+  display: grid;
+  place-items: center;
+}
+
+/* 星等。五則來源截圖皆為五星（見 assets/review-*.jpg），非推定值。
+   用 --orange 而非另外引入評分金色，避免多一個色票；role=img + aria-label
+   讓螢幕閱讀器念「五星評價」，而不是逐字讀五個星號。 */
+.quote-stars {
+  display: block;
+  margin-top: 10px;
+  color: var(--orange);
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.quote-name {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  font-style: normal;   /* <cite> 預設斜體，中文名字斜體不自然 */
+  color: var(--navy);
+}
+
+/* 白底上不用 .carousel-prev/next 預設的半透明黑（那是給 reviews.html 疊在
+   照片上用的），改品牌深藍；限定 .quote-carousel 以免影響該頁。 */
+.quote-carousel .carousel-prev,
+.quote-carousel .carousel-next {
+  background: var(--navy);
+}
+
+.quote-carousel .carousel-prev { left: 0; }
+.quote-carousel .carousel-next { right: 0; }
+.quote-carousel .carousel-dots { bottom: 6px; }
+
+@media (max-width: 767px) {
+  /* 箭頭縮小、內距收窄，把文字可用寬從 238px 拉回 274px */
+  .quote-carousel {
+    padding: 4px 0 40px;
+  }
+
+  .quote-carousel .carousel-page {
+    padding: 0 46px;
+  }
+
+  /* 先前為了讓出文字寬度縮成 32px，但低於觸控目標下限；改回 44px 後文字
+     可用寬由 274px 變 258px，實測最長那則仍為 3 行，版面不受影響。 */
+  .quote-carousel .carousel-prev,
+  .quote-carousel .carousel-next {
+    font-size: 18px;
+  }
+
+  /* 手機最長那則要 3 行（實測 97px），鎖 3 行防切換跳動 */
+  .quote-slide p {
+    font-size: 16px;
+    min-height: 5.7em;
+  }
+
+  .quote-stars {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .quote-name {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+}
+
+/* 展場照片牆：10 張，平板 3 欄／手機 2 欄（覆寫 .grid-4 預設的 2/1 欄） ------------------ */
+.expo-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #eee;
+}
+
+.expo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.expo-item figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 10px;
+  background: linear-gradient(to top, rgba(16, 16, 58, .82), rgba(16, 16, 58, 0));
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@media (max-width: 1023px) {
+  .expo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .expo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 25 年公司介紹 + 品牌 logo 跑馬燈（#about） ---------------------------------------- */
+#about {
+  scroll-margin-top: 88px;
+}
+
+/* 公司介紹長文撐滿容器邊界（2026-08-20 業主指定「貼齊邊界」，於 A 靠左／
+   B 兩欄／C 滿版三案中選 C）。
+   已知取捨：1920px 下每行約 110 個中文字，遠超易讀上限 35–40——眼睛換行時
+   不易定位下一行開頭。曾提案 B（撐滿 + 分兩欄，兼顧貼邊與易讀），業主選
+   單欄滿版。其餘頁面（features 的 zigzag、article 內文）仍保留 42em 護欄。 */
+.about-copy {
+  max-width: none;
+  margin: 0 0 48px;
+  display: grid;
+  gap: 20px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #333;
+  text-align: left;
+}
+
+/* gap 由 48px 收到 32px：logo 實際寬度從 60px 到 225px 相差 3.7 倍，48px 的
+   間距在小 logo 之間會大於 logo 本身，看起來像跑馬燈斷掉。padding 同步減半，
+   維持「兩組交界的間距 == 組內間距」（16+16 == 32），循環處才不會有寬縫。 */
+.client-logos {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 16px;
+}
+
+/* min-width 讓每張 logo 至少佔 104px 的等寬槽位（object-fit:contain 使圖本身
+   置中不變形）。原本最小的 60px 與最寬的 225px 並排，節奏忽疏忽密，正是業主
+   看到的「斷層」；補上下限後間隔規律得多。 */
+.client-logos img {
+  height: 64px;
+  width: auto;
+  min-width: 104px;
+  object-fit: contain;
+}
+
+/* ── 口碑推薦 ── */
+
+/* 區塊副標／說明文字 ---------------------------------------------------------- */
+.sec-sub {
+  text-align: center;
+  color: #555;
+  font-size: 16px;
+  margin: -20px auto 28px;
+}
+
+.sec-desc {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #333;
+}
+
+/* 引言段：客戶原話 ------------------------------------------------------------- */
+.quote-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto 40px;
+}
+
+.quote-item {
+  background: #f5f5f8;
+  border-left: 4px solid var(--orange);
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* Masonry 圖牆（評論牆／客服牆共用） -------------------------------------------- */
+.masonry {
+  columns: 4;
+  column-gap: 16px;
+}
+
+.masonry img {
+  display: block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+
+@media (max-width: 1023px) {
+  .masonry {
+    columns: 3;
+  }
+}
+
+@media (max-width: 767px) {
+  .masonry {
+    columns: 2;
+  }
+}
+
+/* 指定分欄的牆（客服對話牆）。基底 .masonry 交給瀏覽器分配欄位，那對沒有指定
+   順序的評論牆是對的；客服牆的分法由業主指定，必須用明確的欄容器才做得到。
+   兩者同為 (0,1,0)，同分時後寫的贏——本區塊必須留在上面 .masonry 的
+   1023px／767px media query 之後，往前搬會靜默失效。 */
+.masonry-cols {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  /* 不要在這裡寫 columns: auto。flex 容器本來就不套多欄，寫了純屬自我說明——
+     但它會無條件生效，又排在上面 .masonry 的 1023px/767px 規則之後，同特異性
+     後寫的贏，把 3 欄／2 欄一起蓋成單欄。窄螢幕的欄數靠繼承那兩條，這裡必須
+     保持沉默。 */
+}
+
+.masonry-cols .masonry-col {
+  flex: 1;
+  /* flex item 預設 min-width:auto，長圖會把欄撐寬、四欄不再等寬 */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 間距改由 gap 提供；不歸零的話會與基底的 margin-bottom 疊成 32px */
+.masonry-cols img {
+  margin-bottom: 0;
+}
+
+/* 窄螢幕：欄容器以 display:contents 退出版面樹，圖片直接進多欄流，
+   欄數沿用上面 .masonry 的 3 欄／2 欄。固定分欄是桌機的構圖，
+   窄螢幕重排本來就該交給多欄。 */
+@media (max-width: 1023px) {
+  .masonry-cols {
+    display: block;
+  }
+
+  .masonry-cols .masonry-col {
+    display: contents;
+  }
+
+  .masonry-cols img {
+    margin-bottom: 16px;
+  }
+}
+
+/* 使用者作品輪播 ---------------------------------------------------------------- */
+/* 作品輪播的箭頭。
+   共用基底的 rgba(0,0,0,.5) 是半透明，實際顏色會把底圖吃進來——實測疊在圖中
+   深色喇叭上時算出 (67,62,58)，與周圍底圖 (134,127,119) 對比只有 2.67:1，低於
+   WCAG 非文字元件的 3:1，圓鈕整個消失、只剩白箭頭浮在照片上。改用不透明的
+   品牌深藍，顏色不再隨內容變。
+
+   垂直位置：共用基底 top:50% 是對「整個輪播」置中，而輪播底部還有不屬於
+   圖片的區塊，箭頭因此偏低。兩個斷點的參考基準不同，偏移量也不同：
+     <1024px  .grid-3 是堆疊多列，說明文字夾在圖與圖之間、屬於區塊內部，
+              區塊下方只剩圓點區 48px → 偏移 24px
+     >=1024px .grid-3 是單列，圖片下方有說明 34px + 圓點區 48px → 偏移 41px
+   這些高度皆不隨視窗變化（字級固定），故各自為定值。實測 1024/1280/1440/1920
+   偏移恆為 41px；390/768 恆為 24px。 */
+.work-carousel .carousel-prev,
+.work-carousel .carousel-next {
+  background: var(--navy);
+  top: calc(50% - 24px);
+  /* <1024px 退回疊在照片上，仍需白環製造邊界：底圖深時白環顯出來、底圖淺時
+     深藍填色顯出來，至少一層永遠分得出來。 */
+  box-shadow: 0 0 0 2px #fff, 0 2px 8px rgba(0, 0, 0, .3);
+}
+
+/* 手機（<1024px）把翻頁控制集中成底部一列：‹ 圓點 ›。
+   原本箭頭疊在圖上且對整個輪播置中，但手機是 3 張直向堆疊、輪播高 987px
+   超過整個視窗（844px），箭頭落在第 2 張圖中段——進到這區時完全看不到
+   翻頁控制，要捲 469px 它才出現，而且浮在作品上。移到底部後控制項集中
+   一處、捲到區塊結尾自然看到，也不遮作品。
+   .carousel-nav 只在手機參與版面；桌機下箭頭是 position:absolute（相對
+   .work-carousel 定位，這層無 position 不成為包含塊）、dots 也是絕對定位，
+   nav 本身塌成零高度，不影響桌機版面。 */
+@media (max-width: 1023px) {
+  .work-carousel .carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .work-carousel .carousel-prev,
+  .work-carousel .carousel-next {
+    position: static;
+    transform: none;
+    /* 白底上不需要對抗底圖的白環，與桌機同為純投影 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .22);
+  }
+
+  .work-carousel .carousel-dots {
+    position: static;
+  }
+
+  /* 圓點空間改由 nav 列自身佔位，page 不再需要預留底部 48px */
+  .work-carousel .carousel-page {
+    padding-bottom: 0;
+  }
+}
+
+/* 桌機把箭頭移到圖片外側。這區展示的是使用者作品，箭頭壓在圖上會遮住主體；
+   移到白底後也不必再跟底圖的深淺對抗，白環因此改為純投影。
+   代價是圖片讓出 112px：1280 下單張 371→333px（約 -10%）。
+   內距用 padding-inline 而非 padding 簡寫——.work-carousel .carousel-page 已有
+   padding-bottom:48px 供圓點使用，簡寫會把它蓋掉，圓點區歸零後垂直中心也會
+   跟著算錯（實測會偏高 24px）。
+   內距放在 .carousel-page 而非 .work-carousel：overflow:hidden 裁的是邊框盒，
+   padding 區仍在裁切範圍內，相鄰的下一頁會從那裡露出半截。 */
+@media (min-width: 1024px) {
+  .work-carousel .carousel-page {
+    padding-inline: 56px;
+  }
+
+  .work-carousel .carousel-prev { left: 0; }
+  .work-carousel .carousel-next { right: 0; }
+
+  .work-carousel .carousel-prev,
+  .work-carousel .carousel-next { top: calc(50% - 41px); }
+
+  .work-carousel .carousel-prev,
+  .work-carousel .carousel-next {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .22);
+  }
+}
+
+.work-carousel .carousel-page {
+  padding-bottom: 48px;
+}
+
+.work-item {
+  text-align: center;
+}
+
+.work-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: zoom-in;
+  margin-bottom: 12px;
+}
+
+.work-item figcaption {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* ── 功能介紹 ── */
+
+/* 開場：標題＋段落＋總覽圖＋頂部自動播放影片 ------------------------------------- */
+/* 功能頁 hero：複用 .zigzag 的兩欄格線，但它已在 .container 之內，
+   故清掉 .zigzag 自帶的左右內距（避免與 .container 的 20px 疊加）與
+   上內距（標題與影片之間的距離由 .sec-title 的 margin-bottom 決定）。 */
+.zigzag-hero {
+  padding: 0 0 16px;
+}
+
+/* 小標（eyebrow）。設計稿 slide3 每個區塊都是「小標→大標→內文」三層，
+   小標 10pt 粗體、色票 accent6=#F79646；此處沿用站上既有的 --orange
+   (#f28c28)，不另外引入第二個橘。設計稿小標與內文同為 10pt，故字級
+   對齊 .zigzag-text p 的 15px 而非依大標比例縮放。
+   選擇器寫成 .zigzag-text .eyebrow（0,2,0）而非 .eyebrow（0,1,0），
+   是為了勝過後面 .zigzag-text p（0,1,1）的 color:#333。 */
+.zigzag-text .eyebrow {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+
+.video-embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-width: 960px;
+  margin: 0 auto;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* 8 大功能 Benz 式圖文交錯區塊（zigzag）
+   標記：<section class="zigzag" id="…">（偶數功能另加 .rev 圖右文左）內含
+   .zigzag-media（圖）＋ .zigzag-text（h2+文字+.btn-outline）。
+   .rev 用 order 切換視覺順序、不動 DOM 順序；手機一律圖上文下，故在
+   max-width:767px 中把 order 強制歸位，不受 .rev 影響。 ------------------------ */
+.zigzag {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 56px 20px;
+  scroll-margin-top: 88px;
+}
+
+.zigzag + .zigzag {
+  border-top: 1px solid #eee;
+}
+
+.zigzag-media {
+  order: 1;
+}
+
+.zigzag-text {
+  order: 2;
+}
+
+.zigzag.rev .zigzag-media {
+  order: 2;
+}
+
+.zigzag.rev .zigzag-text {
+  order: 1;
+}
+
+.zigzag-media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: zoom-in;
+}
+
+.zigzag-text h2 {
+  font-size: 26px;
+  color: var(--navy);
+  margin-bottom: 16px;
+}
+
+.zigzag-text p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 767px) {
+  .zigzag {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 40px 20px;
+  }
+
+  .zigzag-media,
+  .zigzag.rev .zigzag-media {
+    order: 1;
+  }
+
+  .zigzag-text,
+  .zigzag.rev .zigzag-text {
+    order: 2;
+  }
+}
+
+/* ── 教學與支援 ── */
+
+/* #videos：影音教學區 ---------------------------------------------------------- */
+.support-videos,
+.support-faq {
+  scroll-margin-top: 88px;
+}
+
+.support-videos-title {
+  text-align: center;
+  font-size: 22px;
+  color: var(--navy);
+  margin-bottom: 16px;
+}
+
+.support-videos .sec-desc {
+  margin-bottom: 40px;
+}
+
+/* 影音教學：七個系列輪播（取代原 course-banner 合成圖）。
+   輪播機制完全沿用 .work-carousel（桌機箭頭在外、手機底部控制列、
+   data-single-mobile 一頁一卡），這裡只補影片卡樣式與系列標題。 */
+.series-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 20px;
+  color: var(--navy);
+  margin: 40px 0 14px;
+}
+
+.series-title .bullet-orange {
+  align-self: center;
+}
+
+.series-count {
+  color: #888;
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.series-sub {
+  color: #888;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.video-card .thumb {
+  position: relative;
+  display: block;
+}
+
+/* YouTube 縮圖是 16:9，蓋掉 .work-item img 的 4/3 */
+.video-card img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* 播放鍵。縮圖沒有播放鍵時，這批設計精美的封面圖看起來就是海報而不是影片
+   （右下角的時長徽章太小、也不是「可點」的訊號）。紅鍵沿用首頁 .yt-play 的
+   長相——全站「可播放」只有一種樣子——但縮到 54x38，因為教學卡比首頁影片位
+   小，68px 在手機一頁一張時會擋住封面文字。
+   兩個偽元素：::before 是紅色圓角底，::after 是白色三角（沿用 .yt-play::before
+   的 border 三角作法，不另外引入 SVG）。 */
+.video-card .thumb::before,
+.video-card .thumb::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.video-card .thumb::before {
+  width: 54px;
+  height: 38px;
+  margin: -19px 0 0 -27px;
+  background: #f00;
+  border-radius: 11px;
+  transition: background .2s, transform .2s;
+}
+
+.video-card .thumb::after {
+  margin: -9px 0 0 -5px;
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent #fff;
+}
+
+.video-card:hover .thumb::before {
+  background: #c00;
+  transform: scale(1.06);
+}
+
+.video-card .vc-dur {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(0, 0, 0, .8);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* 標題最多兩行，超出截斷——卡片等高，桌機三卡並排的圖片中心才對齊 */
+.video-card figcaption {
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 頁數計數（main.js render() 會更新）。桌機用圓點、隱藏計數；
+   手機的教學系列頁數多達 27 頁，27 顆圓點沒有意義，改顯示「n / N」。 */
+.carousel-count {
+  display: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  min-width: 64px;
+  text-align: center;
+}
+
+@media (max-width: 1023px) {
+  .video-carousel .carousel-dots { display: none; }
+  .video-carousel .carousel-count { display: block; }
+}
+
+/* #faq：常見問題手風琴 ---------------------------------------------------------- */
+.support-faq .faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.faq-spec-label {
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 8px;
+}
+
+.faq-spec-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.faq-spec-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.faq-spec-list .bullet-orange {
+  margin-top: 6px;
+}
+
+.support-faq .faq-a-inner .btn {
+  margin-top: 12px;
+}
+
+/* Q1 規格清單較長，共用的 400px 上限在手機寬度可能裁切，本頁專屬放寬（不動共用規則） */
+.support-faq .faq-item.open .faq-a {
+  max-height: 700px;
+}
+
+/* ── 素材庫 ── */
+
+/* 月份素材卡（標題置上）＋歷史素材佔位卡（.grid-2，沿用既有 2→1 欄斷點） --------- */
+.material-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+  text-align: center;
+}
+
+.material-card h3 {
+  padding: 18px 20px 12px;
+  color: var(--navy);
+  font-size: 18px;
+}
+
+.material-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  cursor: zoom-in;
+}
+
+.material-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: #f4f4f8;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  color: #999;
+  font-size: 15px;
+}
+
+/* 分頁列（素材庫／新知共用，data-page-group 契約） ------------------------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 40 -> 44：達 WCAG 2.5.5 的 44x44 觸控目標 */
+  min-width: 44px;
+  height: 44px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #f4f4f8;
+  color: var(--navy);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+
+.pagination a:hover {
+  background: #e8e8ee;
+}
+
+.pagination a.active {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* 分頁滾動目標：避開 sticky navbar（全站 88px 慣例） --------------------------- */
+[data-page-group] {
+  scroll-margin-top: 88px;
+}
+
+/* ── 室設新知 ── */
+
+/* 文章卡片列表：整卡 <a>，圖左文右（桌機）／圖上文下（手機） -------------------- */
+.news-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.news-card {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+  transition: transform .25s, box-shadow .25s;
+}
+
+.news-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .18);
+}
+
+/* 封面統一 16:9（2026-08-20 業主定案）。手機段原本就有這個比例，桌機卻是
+   讓圖填滿格線列高，導致三張卡比例各異（實測 1.47 / 1.18 / 0.96）。
+   後台上傳說明會要求 1200x675 橫幅圖——網頁截圖類封面裁成 16:9 會切到字，
+   由素材端解決而非版面遷就。 */
+.news-card-media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.news-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.news-card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px;
+}
+
+.news-tag {
+  align-self: flex-start;
+  background: #f4f4f8;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.news-card-title {
+  font-size: 20px;
+  color: var(--navy);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.5em * 2);
+}
+
+/* 卡片等高（2026-08-20 業主定案）：標題 2 行、摘要 3 行截斷並保留最小高度。
+   .news-card-meta 本來就有 margin-top:auto，日期列會自動釘在卡底。 */
+.news-card-excerpt {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.8em * 3);
+}
+
+.news-card-meta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #999;
+}
+
+.news-card-more {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.news-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  background: #f4f4f8;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  color: #999;
+  font-size: 15px;
+}
+
+@media (max-width: 767px) {
+  .news-card {
+    grid-template-columns: 1fr;
+  }
+
+  .news-card-media img {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .news-card-body {
+    padding: 20px;
+  }
+}
+
+/* 文章內頁：窄欄閱讀排版 ---------------------------------------------------- */
+.article-page .container {
+  max-width: 820px;
+}
+
+.article-tag {
+  display: inline-block;
+  background: #f4f4f8;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.article-title {
+  font-size: 30px;
+  color: var(--navy);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.article-date {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.article-lead-img img,
+.article-inline-img img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.article-content h2 {
+  font-size: 22px;
+  color: var(--navy);
+  margin: 32px 0 14px;
+}
+
+.article-content p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.article-back {
+  margin-top: 24px;
+}
+
+@media (max-width: 767px) {
+  .article-title {
+    font-size: 24px;
+  }
+}
